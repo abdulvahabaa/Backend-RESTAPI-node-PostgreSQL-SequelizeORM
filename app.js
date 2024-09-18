@@ -25,6 +25,13 @@ app.use("*", (req, res) => {
   });
 });
 
+app.use((err, req, res, next) => {
+  res.status(500).json({
+    status: "fail",
+    message: err.message,
+  });
+});
+
 const PORT = process.env.APP_PORT || 3000;
 
 app.listen(PORT, () => {
