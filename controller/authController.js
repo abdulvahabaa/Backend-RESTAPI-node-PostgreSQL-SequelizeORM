@@ -1,6 +1,8 @@
 const user = require("../db/models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 
 const generateToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET_KEY, {
@@ -8,14 +10,11 @@ const generateToken = (payload) => {
   });
 };
 
-const signup = async (req, res, next) => {
+const signup = catchAsync(async (req, res, next) => {
   console.log("req.body", req.body);
   const body = req.body;
   if (!["1", "2", "3"].includes(body.userType)) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Invalid user type",
-    });
+    throw new AppError("Invalid user type", 400);
   }
 
   const newUser = await user.create({
@@ -28,10 +27,7 @@ const signup = async (req, res, next) => {
   });
 
   if (!newUser) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Faild to create user",
-    });
+    return next(new AppError("Faild to create user", 400));
   }
 
   const result = newUser.toJSON();
@@ -44,39 +40,29 @@ const signup = async (req, res, next) => {
   return res.status(200).json({
     status: "success",
     message: "User created successfully",
-    data: {
-      result,
-    },
+    data: result,
   });
-};
+});
 
-const login = async (req, res, next1) => {
+const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Email and password are required",
-    });
+    return next(new AppError("Email and password are required", 400));
   }
   const result = await user.findOne({ where: { email } });
 
   if (!result || !(await bcrypt.compare(password, result.password))) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Icorrect email or password",
-    });
+    return next(new AppError("Incorrect email or password", 400));
   }
 
   const token = generateToken({ id: result.id });
   return res.status(200).json({
     status: "success",
     message: "User logged in successfully",
-    data: {
-      token,
-    },
+    data: token,
   });
-};
+});
 
 module.exports = {
   signup,

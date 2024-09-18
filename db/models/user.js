@@ -2,6 +2,7 @@
 const { Model, Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../../config/database");
 const bcrypt = require("bcrypt");
+const AppError = require("../../utils/appError");
 
 module.exports = sequelize.define(
   "user",
@@ -34,7 +35,7 @@ module.exports = sequelize.define(
           const hashPasword = bcrypt.hashSync(value, 10);
           this.setDataValue("password", hashPasword);
         } else {
-          throw new Error("Passwords and the confirm password must be the same");
+          throw new AppError("Passwords and the confirm password must be the same",400);
         }
       }
     },
