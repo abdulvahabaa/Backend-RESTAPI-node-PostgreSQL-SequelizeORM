@@ -15,18 +15,66 @@ module.exports = sequelize.define(
     },
     userType: {
       type: DataTypes.ENUM("0", "1", "2"),
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "UserType can not be null",
+        },
+        notEmpty: {
+          msg: "UserType can not be empty",
+        },
+      },
     },
     firstName: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "firstName can not be null",
+        },
+        notEmpty: {
+          msg: "firstName can not be empty",
+        },
+      },
     },
     lastName: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "lastName can not be null",
+        },
+        notEmpty: {
+          msg: "lastName can not be empty",
+        },
+      },
     },
     email: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "email can not be null",
+        },
+        notEmpty: {
+          msg: "email can not be empty",
+        },
+        isEmail: {
+          msg: "Invalid email address",
+        },
+      },
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "password can not be null",
+        },
+        notEmpty: {
+          msg: "password can not be empty",
+        },
+      },
     },
     confirmPassword: {
       type: DataTypes.VIRTUAL,
@@ -35,9 +83,12 @@ module.exports = sequelize.define(
           const hashPasword = bcrypt.hashSync(value, 10);
           this.setDataValue("password", hashPasword);
         } else {
-          throw new AppError("Passwords and the confirm password must be the same",400);
+          throw new AppError(
+            "Passwords and the confirm password must be the same",
+            400
+          );
         }
-      }
+      },
     },
     createdAt: {
       allowNull: false,
@@ -57,4 +108,3 @@ module.exports = sequelize.define(
     modelName: "user",
   }
 );
-
