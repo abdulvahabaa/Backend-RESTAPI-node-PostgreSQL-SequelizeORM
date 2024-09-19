@@ -79,6 +79,10 @@ module.exports = sequelize.define(
     confirmPassword: {
       type: DataTypes.VIRTUAL,
       set(value) {
+        if (this.pasword.length < 6) {
+          throw new AppError("Password must be at least 6 characters", 400);
+        }
+
         if (value === this.password) {
           const hashPasword = bcrypt.hashSync(value, 10);
           this.setDataValue("password", hashPasword);
