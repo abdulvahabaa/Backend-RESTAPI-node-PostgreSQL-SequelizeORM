@@ -15,10 +15,10 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "title can not be null",
+          msg: "title cannot be null",
         },
         notEmpty: {
-          msg: "title can not be empty",
+          msg: "title cannot be empty",
         },
       },
     },
@@ -29,7 +29,7 @@ module.exports = sequelize.define(
       validate: {
         isIn: {
           args: [[true, false]],
-          msg: "isFeatured can only be true or false",
+          msg: "isFeatured value must be true or false",
         },
       },
     },
@@ -38,7 +38,7 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "productImage can not be null",
+          msg: "productImage cannot be null",
         },
       },
     },
@@ -47,10 +47,10 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "price can not be null",
+          msg: "price cannot be null",
         },
         isDecimal: {
-          msg: "price can only be in decimal",
+          msg: "price value must be in decimal",
         },
       },
     },
@@ -59,10 +59,10 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "shortDescription can not be null",
+          msg: "shortDescription cannot be null",
         },
         notEmpty: {
-          msg: "shortDescription can not be empty",
+          msg: "shortDescription cannot be empty",
         },
       },
     },
@@ -71,61 +71,60 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "description can not be null",
+          msg: "description cannot be null",
         },
         notEmpty: {
-          msg: "description can not be empty",
+          msg: "description cannot be empty",
         },
       },
-      productUrl: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notNull: {
-            msg: "productUrl can not be null",
-          },
-          notEmpty: {
-            msg: "productUrl can not be empty",
-          },
-          isUrl: {
-            msg: "Invalid product url string",
-          },
+    },
+    productUrl: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "productUrl cannot be null",
+        },
+        notEmpty: {
+          msg: "productUrl cannot be empty",
+        },
+        isUrl: {
+          msg: "Invalid productUrl string",
         },
       },
-      category: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        validate: {
-          notNull: {
-            msg: "category can not be null",
-          },
+    },
+    category: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "category cannot be null",
         },
       },
-      tags: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        validate: {
-          notNull: {
-            msg: "tags can not be null",
-          },
+    },
+    tags: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "tags cannot be null",
         },
       },
-      createdBy: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: "user",
-          key: "id",
-        },
+    },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "User",
+        key: "id",
       },
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
-      updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-      },
-      deletedAt: {
-        type: DataTypes.DATE,
-      },
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATE,
+    },
+    updatedAt: {
+      allowNull: false,
+      type: DataTypes.DATE,
     },
   },
   {

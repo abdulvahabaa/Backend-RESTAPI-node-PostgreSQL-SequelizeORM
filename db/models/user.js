@@ -1,10 +1,12 @@
 "use strict";
 const { Model, Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("../../config/database");
 const bcrypt = require("bcrypt");
-const AppError = require("../../utils/appError");
 
-module.exports = sequelize.define(
+const sequelize = require("../../config/database");
+const AppError = require("../../utils/appError");
+const project = require("./project");
+
+const user = sequelize.define(
   "user",
   {
     id: {
@@ -18,10 +20,10 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "UserType can not be null",
+          msg: "firstName cannot be null",
         },
         notEmpty: {
-          msg: "UserType can not be empty",
+          msg: "firstName cannot be empty",
         },
       },
     },
@@ -30,10 +32,10 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "firstName can not be null",
+          msg: "firstName cannot be null",
         },
         notEmpty: {
-          msg: "firstName can not be empty",
+          msg: "firstName cannot be empty",
         },
       },
     },
@@ -42,10 +44,10 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "lastName can not be null",
+          msg: "lastName cannot be null",
         },
         notEmpty: {
-          msg: "lastName can not be empty",
+          msg: "lastName cannot be empty",
         },
       },
     },
@@ -54,13 +56,13 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "email can not be null",
+          msg: "email cannot be null",
         },
         notEmpty: {
-          msg: "email can not be empty",
+          msg: "email cannot be empty",
         },
         isEmail: {
-          msg: "Invalid email address",
+          msg: "Invalid email id",
         },
       },
     },
@@ -69,26 +71,25 @@ module.exports = sequelize.define(
       allowNull: false,
       validate: {
         notNull: {
-          msg: "password can not be null",
+          msg: "password cannot be null",
         },
         notEmpty: {
-          msg: "password can not be empty",
+          msg: "password cannot be empty",
         },
       },
     },
     confirmPassword: {
       type: DataTypes.VIRTUAL,
       set(value) {
-        if (this.pasword.length < 6) {
-          throw new AppError("Password must be at least 6 characters", 400);
+        if (this.password.length < 7) {
+          throw new AppError("Password length must be grater than 7", 400);
         }
-
         if (value === this.password) {
-          const hashPasword = bcrypt.hashSync(value, 10);
-          this.setDataValue("password", hashPasword);
+          const hashPassword = bcrypt.hashSync(value, 10);
+          this.setDataValue("password", hashPassword);
         } else {
           throw new AppError(
-            "Passwords and the confirm password must be the same",
+            "Password and confirm password must be the same",
             400
           );
         }
@@ -112,3 +113,10 @@ module.exports = sequelize.define(
     modelName: "user",
   }
 );
+
+user.hasMany(project, { foreignKey: "createdBy" });
+project.belongsTo(user, {
+  foreignKey: "createdBy",
+});
+
+module.exports = user;
